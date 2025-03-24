@@ -1,7 +1,5 @@
 # Import python packages
 import streamlit as st
-
-
 from snowflake.snowpark.functions import col
 
 helpful_links = [
@@ -19,7 +17,7 @@ name_on_order = st.text_input("Name on Somoothie")
 st.write("The name on your smoothie will be:", name_on_order)
 
 cnx = st.connection ("snowflake")
-session = cnx.connection()
+session = cnx.connect()
 
 my_dataframe = session.table ("smoothies.public.fruit_options").select(col ("FRUIT_NAME"))
 #st.dataframe (data= my_dataframe, use_container_width= True)
