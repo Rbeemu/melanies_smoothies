@@ -9,15 +9,15 @@ helpful_links = [
     "https://docs.snowflake.com/en/release-notes/streamlit-in-snowflake"
 ]
 
+cnx = st.connection ("snowflake")
+session = cnx.connect()
+
 # Write directly to the app
 st.title("Customize your Smoothie :cup_with_straw:")
 st.write("choose the fruits you want in your custom smoothie:")
 
 name_on_order = st.text_input("Name on Somoothie")
 st.write("The name on your smoothie will be:", name_on_order)
-
-cnx = st.connection ("snowflake")
-session = cnx.connect()
 
 my_dataframe = session.table ("smoothies.public.fruit_options").select(col ("FRUIT_NAME"))
 #st.dataframe (data= my_dataframe, use_container_width= True)
