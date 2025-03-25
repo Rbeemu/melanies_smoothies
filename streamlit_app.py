@@ -1,9 +1,7 @@
-# Import python packages
 import streamlit as st
 import snowflake.connector 
 from snowflake.snowpark.functions import col
 import requests
-
 
 helpful_links = [
     "https://docs.streamlit.io",
@@ -14,42 +12,48 @@ helpful_links = [
 
 # Write directly to the app
 st.title("Customize your Smoothie :cup_with_straw:")
-st.write("choose the fruits you want in your custom smoothie:")
+st.write("Choose the fruits you want in your custom smoothie:")
 
-name_on_order = st.text_input("Name on Somoothie")
+name_on_order = st.text_input("Name on Smoothie")
 st.write("The name on your smoothie will be:", name_on_order)
 
-cnx = st.connection ("snowflake")
-session = cnx.connection()
+# Correct Snowflake connection
+conn = snowflake.connector.connect(
+    user='LREDDY',
+    password='Mammu240320252',
+    account='XQDGXMV-BVB63220'
+)
+session = conn.cursor()
 
-my_dataframe = session.table ("smoothies.public.fruit_options").select(col ("FRUIT_NAME"))
-#st.dataframe (data= my_dataframe, use_container_width= True)
-
+session.execute("USE DATABASE smoothies")
+session.execute("USE SCHEMA public")
+session.execute("SELECT FRUIT_NAME FROM fruit_options")
+my_dataframe = session.fetchall()
 
 ingredients_list = st.multiselect(
-    "Choose upto 5 ingredients"
-    ,my_dataframe
-    , max_selections =5
+    "Choose up to 5 ingredients",
+    [row[0] for row in my_dataframe],
+    max_selections=5
 )
+
 if ingredients_list:
-        
     ingredients_string = ''
 
-    for fruit_chosen in ingredients_list: 
+    for fruit_chosen in ingredients_list:
         ingredients_string += fruit_chosen + ' '
         st.subheader(fruit_chosen + ' Nutrition Information')
         smoothiefroot_response = requests.get("https://my.smoothiefroot.com/api/fruit/" + fruit_chosen)
-        sf_df = st.dataframe(smoothiefruit_response.json(), use_container_width = true)
+        st.dataframe(smoothiefroot_response.json(), use_container_width=True)
+    
     st.write(ingredients_string)
     
-    my_insert_stmt = """ insert into smoothies.public.orders(ingredients,name_on_order)
-            values ('""" + ingredients_string + """','"""+name_on_order+ """')"""
-          
-    time_to_insert = st.button ('Submit Order')
+    my_insert_stmt = f"""
+    INSERT INTO smoothies.public.orders (ingredients, name_on_order)
+    VALUES ('{ingredients_string}', '{name_on_order}')
+    """
+    
+    time_to_insert = st.button('Submit Order')
     
     if time_to_insert:
-       session.sql(my_insert_stmt).collect()
-       st.success('Your Smoothie is ordered !', icon="✅")
-
-
-
+        session.execute(my_insert_stmt)
+        st.success('Your Smoothie is ordered!', icon="✅")
