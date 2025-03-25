@@ -20,9 +20,9 @@ st.write("The name on your smoothie will be:", name_on_order)
 
 # Correct Snowpark session initialization
 connection_parameters = {
-    "account": "XQDGXMV-BVB63220",
-    "user": "LREDDY",
-    "password": "Mammu240320252",
+    "account": "Xxxxxxxxxxxx",
+    "user": "xxxxxxx",
+    "password": "xxxxxxxx",
     "role": "SYSADMIN",
     "warehouse": "COMPUTE_WH",
     "database": "smoothies",
