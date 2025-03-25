@@ -32,7 +32,7 @@ connection_parameters = {
 session = Session.builder.configs(connection_parameters).create()
 
 # Fetching data with Snowpark
-my_dataframe = session.table('fruit_options').select(col('FRUIT_NAME'), col('SEARCH_ON')).collect()
+my_dataframe = session.table('fruit_options').select(col('FRUIT_NAME'), col('SEARCH_ON'))
 
 # Convert to Pandas DataFrame
 pd_df = pd.DataFrame(my_dataframe)
