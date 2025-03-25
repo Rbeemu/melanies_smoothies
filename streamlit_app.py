@@ -28,8 +28,11 @@ session = conn.cursor()
 session.execute("USE DATABASE smoothies")
 session.execute("USE SCHEMA public")
 session.execute("SELECT FRUIT_NAME FROM fruit_options")
-my_dataframe = session.fetchall()
+my_dataframe = session.table('smoothies.public.fruit_options').select ((col('FRUIT_NAME'), col('SEARCH_ON'))
+# my_dataframe = session.fetchall()
 
+pd_df = my_dataframe.to_pandas()
+st.dataframe(pd_df)
 ingredients_list = st.multiselect(
     "Choose up to 5 ingredients",
     [row[0] for row in my_dataframe],
