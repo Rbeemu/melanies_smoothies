@@ -54,7 +54,7 @@ if ingredients_list:
         st.subheader(fruit_chosen + ' Nutrition Information')
         
         # Print the search_on value for debugging
-        st.write(f"Fetching data for: {search_on}")
+        #st.write(f"Fetching data for: {search_on}")
         
         fruityvice_response = requests.get("https://fruityvice.com/api/fruit/" + search_on)
         st.dataframe(fruityvice_response.json(), use_container_width=True)
