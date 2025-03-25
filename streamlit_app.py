@@ -2,6 +2,7 @@ import streamlit as st
 from snowflake.snowpark import Session
 from snowflake.snowpark.functions import col
 import requests
+import pandas as pd
 
 helpful_links = [
     "https://docs.streamlit.io",
@@ -34,7 +35,6 @@ session = Session.builder.configs(connection_parameters).create()
 my_dataframe = session.table('fruit_options').select(col('FRUIT_NAME'), col('SEARCH_ON')).collect()
 
 # Convert to Pandas DataFrame
-import pandas as pd
 pd_df = pd.DataFrame(my_dataframe)
 
 st.dataframe(pd_df)
@@ -52,6 +52,10 @@ if ingredients_list:
         ingredients_string += fruit_chosen + ' '
         search_on = pd_df.loc[pd_df['FRUIT_NAME'] == fruit_chosen, 'SEARCH_ON'].iloc[0]
         st.subheader(fruit_chosen + ' Nutrition Information')
+        
+        # Print the search_on value for debugging
+        st.write(f"Fetching data for: {search_on}")
+        
         fruityvice_response = requests.get("https://fruityvice.com/api/fruit/" + search_on)
         st.dataframe(fruityvice_response.json(), use_container_width=True)
     
